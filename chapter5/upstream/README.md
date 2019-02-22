@@ -1,5 +1,5 @@
 # 编译
-./configure --add-module=/你的路径/chapter3/helloworld/
+./configure --add-module=/你的路径/chapter5/upstream/
 
 # nginx.conf
 ```   
