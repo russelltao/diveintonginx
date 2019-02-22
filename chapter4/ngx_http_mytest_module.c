@@ -292,6 +292,10 @@ static void* ngx_http_mytest_create_loc_conf(ngx_conf_t *cf)
     mycf->my_sec = NGX_CONF_UNSET;
     mycf->my_size = NGX_CONF_UNSET_SIZE;
 
+	//请注意，由于Nginx版本更新，以下类型必须先初始化才能使用预设方法解析配置
+	mycf->my_enum_seq = NGX_CONF_UNSET_UINT;
+	mycf->my_access = NGX_CONF_UNSET_UINT;
+
     return mycf;
 }
 
