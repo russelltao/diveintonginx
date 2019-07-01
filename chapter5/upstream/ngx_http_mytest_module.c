@@ -155,11 +155,11 @@ static char *ngx_http_mytest_merge_loc_conf(ngx_conf_t *cf, void *parent, void *
 static ngx_int_t
 mytest_upstream_create_request(ngx_http_request_t *r)
 {
-    //发往google上游服务器的请求很简单，就是模仿正常的搜索请求，
-//以/search?q=…的URL来发起搜索请求。backendQueryLine中的%V等转化
+    //发往baidu上游服务器的请求很简单，就是模仿正常的搜索请求，
+//以/s?wd=…的URL来发起搜索请求。backendQueryLine中的%V等转化
 //格式的用法，请参见4.4节中的表4-7
     static ngx_str_t backendQueryLine =
-        ngx_string("GET /search?q=%V HTTP/1.1\r\nHost: www.google.com\r\nConnection: close\r\n\r\n");
+        ngx_string("GET /s?wd=%V HTTP/1.1\r\nHost: www.baidu.com\r\nConnection: close\r\n\r\n");
     ngx_int_t queryLineLen = backendQueryLine.len + r->args.len - 2;
     //必须由内存池中申请内存，这有两点好处：在网络情况不佳的情况下，向上游
 //服务器发送请求时，可能需要epoll多次调度send发送才能完成，
@@ -458,9 +458,9 @@ ngx_http_mytest_handler(ngx_http_request_t *r)
         return NGX_ERROR;
     }
 
-    //这里的上游服务器就是www.google.com
+    //这里的上游服务器就是www.baidu.com
     static struct sockaddr_in backendSockAddr;
-    struct hostent *pHost = gethostbyname((char*) "www.google.com");
+    struct hostent *pHost = gethostbyname((char*) "www.baidu.com");
     if (pHost == NULL)
     {
         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
@@ -481,6 +481,7 @@ ngx_http_mytest_handler(ngx_http_request_t *r)
     u->resolved->sockaddr = (struct sockaddr *)&backendSockAddr;
     u->resolved->socklen = sizeof(struct sockaddr_in);
     u->resolved->naddrs = 1;
+	u->resolved->port = 80;
 
     //设置三个必须实现的回调方法，也就是5.3.3节至5.3.5节中实现的3个方法
     u->create_request = mytest_upstream_create_request;
